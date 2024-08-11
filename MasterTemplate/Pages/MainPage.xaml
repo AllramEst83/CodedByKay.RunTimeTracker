@@ -3,38 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MasterTemplate.MainPage"
              xmlns:viewmodel="clr-namespace:MasterTemplate.ViewModels"
-             x:DataType="viewmodel:MainViewModel">
+             x:DataType="viewmodel:MainViewModel"
+             BackgroundColor="#2ecc71">
 
-    <ContentPage.Resources>
-        <!-- Define styles for labels -->
-        <Style TargetType="Label" x:Key="ColoredLabel">
-            <Setter Property="FontSize" Value="20" />
-            <Setter Property="FontAttributes" Value="Bold" />
-            <Setter Property="Padding" Value="5" />
-        </Style>
-
-        <!-- Define styles for CollectionView -->
-        <Style TargetType="CollectionView" x:Key="ColoredCollectionView">
-            <Setter Property="BackgroundColor" Value="#F0F0F0" />
-            <Setter Property="Margin" Value="10" />
-        </Style>
-
-        <!-- Define DataTemplate for CollectionView items -->
-        <DataTemplate x:Key="ColoredItemTemplate">
-            <Grid BackgroundColor="Pink" Padding="10">
-                <Label Text="{Binding}" TextColor="Black" HorizontalTextAlignment="End"/>
-            </Grid>
-        </DataTemplate>
-    </ContentPage.Resources>
-    
     <VerticalStackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Padding="20">
-        <!-- Bindings for your labels -->
-        <Label Text="{Binding AppSettingsMessage}" Style="{StaticResource ColoredLabel}" HorizontalTextAlignment="Start" BackgroundColor="MediumPurple" TextColor="DarkMagenta"/>
-        <Label Text="{Binding ServiceMessage}" Style="{StaticResource ColoredLabel}" HorizontalTextAlignment="Center" BackgroundColor="LightGreen" TextColor="Black"/>
 
-        <!-- CollectionView with colored background and item template -->
-        <CollectionView ItemsSource="{Binding ServiceMessages}" 
-                        Style="{StaticResource ColoredCollectionView}" 
-                        ItemTemplate="{StaticResource ColoredItemTemplate}" />
+        <Label Text="{Binding GoalReached}" FontSize="30" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center" Margin="0,0,0,25"/>
+        <Label Text="{Binding ClearedDistance}" FontSize="30" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center" Margin="0,0,0,25"/>
+        
+        <Entry Placeholder="Skriv distans i km" IsVisible="{Binding IsVisble}" FontSize="20" Text="{Binding TargetDistance}" Keyboard="Numeric" />
+
+        <Button Text="Start Tracking" IsEnabled="{Binding IsActive}" WidthRequest="370" Command="{Binding StartTrackingCommand}" FontSize="20" BackgroundColor="#3498db" TextColor="Black" Margin="0,5,0,8"/>
+        <Button Text="Stop Tracking" WidthRequest="370" Command="{Binding StopTrackingCommand}" FontSize="20" BackgroundColor="#e74c3c" TextColor="Black"/>
+        
     </VerticalStackLayout>
+
 </ContentPage>

@@ -1,4 +1,5 @@
-﻿using MasterTemplate.ViewModels;
+﻿#if ANDROID21_0_OR_GREATER
+using MasterTemplate.ViewModels;
 
 namespace MasterTemplate
 {
@@ -40,3 +41,4 @@ namespace MasterTemplate
     }
 
 }
+#endif

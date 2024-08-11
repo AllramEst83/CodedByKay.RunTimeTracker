@@ -21,10 +21,10 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>MasterTemplate</ApplicationTitle>
+		<ApplicationTitle>RunTimeTracker</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.mastertemplate</ApplicationId>
+		<ApplicationId>com.codedbykay.runtimetracker</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -56,6 +56,13 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Resources\raw\end.m4a" />
+	  <None Remove="Resources\raw\half_way.m4a" />
+	  <None Remove="Resources\raw\pep_talk1.m4a" />
+	  <None Remove="Resources\raw\pep_talk2.m4a" />
+	</ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="appsettings.json" Condition="'$(Configuration)'=='Release'">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -81,6 +88,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Plugin.Maui.Audio" Version="3.0.0" />
     
 	</ItemGroup>
 

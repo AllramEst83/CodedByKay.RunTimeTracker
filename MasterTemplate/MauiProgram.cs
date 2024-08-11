@@ -5,6 +5,7 @@ using MasterTemplate.Services;
 using MasterTemplate.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Plugin.Maui.Audio;
 
 namespace MasterTemplate
 {
@@ -56,11 +57,12 @@ configFileName = "MasterTemplate.appsettings.json";
                 //Services
                 .AddSingleton<IUserSecureStorageService, UserSecureStorageService>()
                 .AddSingleton<IPreferencesService, PreferencesService>()
-                .AddSingleton<IMainService, MainService>()
+                .AddSingleton(AudioManager.Current)
 
+#if ANDROID21_0_OR_GREATER
                 //ViewModels
                 .AddSingleton<MainViewModel>()
-
+#endif
                 //Pages
                 .AddSingleton<MainPage>();
 #if DEBUG
