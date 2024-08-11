@@ -92,6 +92,8 @@ namespace MasterTemplate.Services
                 return StartCommandResult.NotSticky;
             }
 
+            _mediaPlayer ??= new MediaPlayer();
+
             CreateNotificationChannel();
 
             var notification = new Notification.Builder(this, ChannelId)
