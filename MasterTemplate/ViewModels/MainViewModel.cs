@@ -1,17 +1,19 @@
-﻿#if ANDROID21_0_OR_GREATER
+﻿#if ANDROID26_0_OR_GREATER
+using Android.Content;
+using Java.Lang.Annotation;
+using Android.Webkit;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MasterTemplate.Services;
 using System;
 using System.Threading.Tasks;
-using Android.Content;
 using CommunityToolkit.Mvvm.Messaging;
 using MasterTemplate.Models;
-using Java.Lang.Annotation;
-using Android.Webkit;
+using System.Runtime.Versioning;
 
 namespace MasterTemplate.ViewModels
 {
+    [SupportedOSPlatform("android26.0")]
     public partial class MainViewModel : ObservableObject
     {
         [ObservableProperty]
@@ -81,11 +83,9 @@ namespace MasterTemplate.ViewModels
 
             WeakReferenceMessenger.Default.Register<GoalReachedMessage>(this, (recipient, message) =>
             {
-                // Update the finish message when the goal is reached
                 GoalReached = $"Boom! Bra jobbat! {TargetDistance} km avklarad";
             });
         }
-
 
         private async Task<bool> GetLocationPermission()
         {

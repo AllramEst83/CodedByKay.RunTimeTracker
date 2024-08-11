@@ -1,4 +1,4 @@
-﻿#if ANDROID21_0_OR_GREATER
+﻿#if ANDROID26_0_OR_GREATER
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -6,16 +6,21 @@ using Android.Runtime;
 using Android.Locations;
 using System.Threading.Tasks;
 using System;
-using Android.Media;
 using Microsoft.Maui.ApplicationModel;
+using Android.Media;
 using CommunityToolkit.Mvvm.Messaging;
 using MasterTemplate.Models;
 using System.Security;
 using Android.Content.PM;
+using System.Runtime.Versioning;
 
 namespace MasterTemplate.Services
 {
-    [Service (ForegroundServiceType = ForegroundService.TypeLocation)]
+    /// <summary>
+    /// A foreground service that tracks the user's location and distance traveled during a run.
+    /// </summary>
+    [Service(ForegroundServiceType = ForegroundService.TypeLocation)]
+    [SupportedOSPlatform("android26.0")]
     public class LocationService : Service, ILocationListener
     {
         private LocationManager? _locationManager = null;
@@ -32,40 +37,53 @@ namespace MasterTemplate.Services
         private bool _pepTalk2Notified = false;
         private bool _endNotified = false;
 
-        // Create Notification Channel for Android 8.0+
+        /// <summary>
+        /// Creates a notification channel for the foreground service.
+        /// </summary>
         private void CreateNotificationChannel()
         {
             if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
                 var channelName = "Location Service";
                 var channelDescription = "Notification channel for location service";
-                var channel = new NotificationChannel(ChannelId, channelName, NotificationImportance.Low)
+                NotificationChannel channel = new(ChannelId, channelName, NotificationImportance.Low)
                 {
                     Description = channelDescription
                 };
 
                 var notificationManager = (NotificationManager)GetSystemService(NotificationService);
-                notificationManager.CreateNotificationChannel(channel);
+                notificationManager?.CreateNotificationChannel(channel);
             }
         }
 
+        /// <summary>
+        /// Called when the service is first created.
+        /// </summary>
         public override void OnCreate()
         {
             base.OnCreate();
             _locationManager = (LocationManager?)GetSystemService(LocationService);
 
-            // Reset state
-            _pepTalk1Notified = false;
-            _halfwayNotified = false;
-            _pepTalk2Notified = false;
-            _endNotified = false;
+            ResetState();
         }
 
+        /// <summary>
+        /// Binds the service to an intent.
+        /// </summary>
+        /// <param name="intent">The intent to bind to.</param>
+        /// <returns>An IBinder object that the client can use to communicate with the service.</returns>
         public override IBinder? OnBind(Intent? intent)
         {
             return null;
         }
 
+        /// <summary>
+        /// Starts the service when the start command is issued.
+        /// </summary>
+        /// <param name="intent">The intent supplied to startService(Intent).</param>
+        /// <param name="flags">Additional data about this start request.</param>
+        /// <param name="startId">A unique integer representing this specific request to start.</param>
+        /// <returns>The start command result.</returns>
         public override StartCommandResult OnStartCommand(Intent? intent, StartCommandFlags flags, int startId)
         {
             if (!IsPermissionGranted())
@@ -95,12 +113,13 @@ namespace MasterTemplate.Services
                 }
             }
 
-            _lastLocation = null;
-            _totalDistance = 0;
-            _pepTalk1Notified = false;
-            _halfwayNotified = false;
-            _pepTalk2Notified = false;
-            _endNotified = false;
+            ResetState();
+
+            if (intent == null)
+            {
+                StopSelf();
+                return StartCommandResult.NotSticky;
+            }
 
             _targetDistance = intent.GetDoubleExtra("TargetDistance", 0);
             _locationProvider = LocationManager.GpsProvider;
@@ -112,11 +131,16 @@ namespace MasterTemplate.Services
             catch (SecurityException)
             {
                 StopSelf();
+                return StartCommandResult.NotSticky;
             }
 
             return StartCommandResult.Sticky;
         }
 
+        /// <summary>
+        /// Checks if location permissions are granted.
+        /// </summary>
+        /// <returns>True if permissions are granted; otherwise, false.</returns>
         private bool IsPermissionGranted()
         {
             var fineLocationPermission = Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>().Result;
@@ -124,7 +148,10 @@ namespace MasterTemplate.Services
             return fineLocationPermission == PermissionStatus.Granted;
         }
 
-
+        /// <summary>
+        /// Handles changes to the user's location.
+        /// </summary>
+        /// <param name="location">The new location of the user.</param>
         public void OnLocationChanged(Android.Locations.Location location)
         {
             if (_lastLocation != null)
@@ -164,9 +191,6 @@ namespace MasterTemplate.Services
                     WeakReferenceMessenger.Default.Send(new GoalReachedMessage());
                 }
 
-                // Log the calculated distance for debugging
-                Android.Util.Log.Debug("LocationService", $"Distance Traveled: {_totalDistance} km");
-
                 // Send updated distance to the activity via WeakReferenceMessenger
                 WeakReferenceMessenger.Default.Send(new DistanceUpdateMessage(_totalDistance));
             }
@@ -174,16 +198,19 @@ namespace MasterTemplate.Services
             _lastLocation = location;
         }
 
+        /// <summary>
+        /// Plays an audio file.
+        /// </summary>
+        /// <param name="fileName">The name of the audio file to play.</param>
         private void PlayAudioFile(string fileName)
         {
             try
             {
-                _mediaPlayer?.Release(); // Release any previous media player instance
+                _mediaPlayer?.Reset();
 
                 var audioAssetStream = Android.App.Application.Context.Assets.OpenFd(fileName);
-                if (audioAssetStream != null)
+                if (audioAssetStream != null && _mediaPlayer != null)
                 {
-                    _mediaPlayer = new MediaPlayer();
                     _mediaPlayer.SetDataSource(audioAssetStream.FileDescriptor, audioAssetStream.StartOffset, audioAssetStream.Length);
                     _mediaPlayer.Prepare();
                     _mediaPlayer.Start();
@@ -195,16 +222,41 @@ namespace MasterTemplate.Services
             }
         }
 
+        /// <summary>
+        /// Cleans up the service when it is destroyed.
+        /// </summary>
         public override void OnDestroy()
         {
             _locationManager?.RemoveUpdates(this);
             _mediaPlayer?.Release();
             _mediaPlayer = null;
 
-            StopForeground(true); // Stop the foreground service
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu) // API level 33 (Android 13)
+            {
+                StopForeground(StopForegroundFlags.Remove);
+            }
+            else
+            {
+                StopForeground(true); // For older API levels
+            }
+
             StopSelf(); // Stop the service itself
 
             base.OnDestroy();
+        }
+
+
+        /// <summary>
+        /// Resets the state of the service.
+        /// </summary>
+        private void ResetState()
+        {
+            _pepTalk1Notified = false;
+            _halfwayNotified = false;
+            _pepTalk2Notified = false;
+            _endNotified = false;
+            _totalDistance = 0;
+            _lastLocation = null;
         }
 
         public void OnProviderDisabled(string provider) { }
