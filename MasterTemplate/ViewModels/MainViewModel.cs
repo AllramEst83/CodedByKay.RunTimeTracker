@@ -17,7 +17,7 @@ namespace MasterTemplate.ViewModels
     public partial class MainViewModel : ObservableObject
     {
         [ObservableProperty]
-        private double _targetDistance = 0.010;
+        private double _targetDistance = 1;
         
         [ObservableProperty]
         private string _clearedDistance = string.Empty;
