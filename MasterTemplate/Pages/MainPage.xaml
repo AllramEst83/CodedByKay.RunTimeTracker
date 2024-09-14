@@ -1,35 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MasterTemplate.MainPage"
-             xmlns:viewmodel="clr-namespace:MasterTemplate.ViewModels"
-             x:DataType="viewmodel:MainViewModel"
-             BackgroundColor="#f0f0f0"
-             Title="Run Time Tracker">
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="MasterTemplate.MainPage"
+    xmlns:viewmodel="clr-namespace:MasterTemplate.ViewModels"
+    x:DataType="viewmodel:MainViewModel"
+    BackgroundColor="#f7d794"
+    Title="Run Time Tracker">
 
     <ContentPage.Resources>
         <!-- Define styles for reuse -->
         <Style x:Key="TitleLabelStyle" TargetType="Label">
             <Setter Property="FontSize" Value="28"/>
             <Setter Property="FontAttributes" Value="Bold"/>
-            <Setter Property="TextColor" Value="#2d3436"/>
-            <!-- Dark Grey -->
+            <Setter Property="TextColor" Value="#303952"/>
+            <!-- Dark Blue -->
             <Setter Property="HorizontalOptions" Value="Center"/>
             <Setter Property="Margin" Value="0,20,0,10"/>
         </Style>
 
         <Style x:Key="InstructionLabelStyle" TargetType="Label">
             <Setter Property="FontSize" Value="18"/>
-            <Setter Property="TextColor" Value="#636e72"/>
-            <!-- Light Grey -->
+            <Setter Property="TextColor" Value="#303952"/>
+            <!-- Dark Blue -->
             <Setter Property="HorizontalOptions" Value="Center"/>
             <Setter Property="Margin" Value="0,10,0,5"/>
         </Style>
 
         <Style x:Key="DataLabelStyle" TargetType="Label">
             <Setter Property="FontSize" Value="20"/>
-            <Setter Property="TextColor" Value="#2d3436"/>
-            <!-- Dark Grey -->
+            <Setter Property="TextColor" Value="#303952"/>
+            <!-- Dark Blue -->
             <Setter Property="HorizontalOptions" Value="Center"/>
             <Setter Property="Margin" Value="0,5,0,5"/>
         </Style>
@@ -43,63 +44,77 @@
         </Style>
     </ContentPage.Resources>
 
-    <ScrollView>
-        <StackLayout Padding="30" Spacing="10" BackgroundColor="Wheat">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="30" Spacing="10">
 
-            <!-- App Title -->
-            <Label Text="Run Time Tracker" Style="{StaticResource TitleLabelStyle}"/>
+                <!-- App Title -->
+                <Label Text="Run Time Tracker" Style="{StaticResource TitleLabelStyle}"/>
 
-            <!-- Entry for Target Distance -->
-            <Label Text="Enter your target distance (km):"
-                   Style="{StaticResource InstructionLabelStyle}"
-                   IsVisible="{Binding IsVisible}"/>
+                <!-- Instruction -->
+                <Label Text="Enter your target distance (km):"
+                       Style="{StaticResource InstructionLabelStyle}"
+                       IsVisible="{Binding IsVisible}"/>
 
-            <!-- Display Target Distance after Start Tracking -->
-            <Label Text="Target Distance:"
-                   FontSize="18"
-                   TextColor="#2c3e50"
-                   IsVisible="{Binding IsTracking}"
-                   HorizontalOptions="Center"/>
+                <!-- Entry for Target Distance -->
+                <Frame CornerRadius="5"
+                       BorderColor="#303952" 
+                    Padding="0"
+                       IsVisible="{Binding IsVisible}"
+                       HorizontalOptions="Center"
+                       WidthRequest="200">
+                    <Entry  Placeholder="e.g., 5"
+                            FontSize="20"
+                            Text="{Binding TargetDistance}"
+                            Keyboard="Numeric"
+                            TextColor="#303952" 
+                            PlaceholderColor="#596275"
+                            BackgroundColor="Transparent"
+                            HorizontalOptions="FillAndExpand"/>
+                </Frame>
 
-            <Label Text="{Binding DisplayTargetDistance}"
-                   Style="{StaticResource DataLabelStyle}"
-                   IsVisible="{Binding IsTracking}"/>
+                <!-- Display Target Distance after Start Tracking -->
+                <Label Text="Target Distance:"
+                       Style="{StaticResource InstructionLabelStyle}"
+                       IsVisible="{Binding IsTracking}"/>
 
-            <!-- Display Cleared Distance -->
-            <Label Text="Distance Covered:"
-                   FontSize="18"
-                   TextColor="#2c3e50"
-                   IsVisible="{Binding IsTracking}"
-                   HorizontalOptions="Center"/>
+                <Label Text="{Binding DisplayTargetDistance}"
+                       Style="{StaticResource DataLabelStyle}"
+                       IsVisible="{Binding IsTracking}"/>
 
-            <Label Text="{Binding ClearedDistance}" 
-                   Style="{StaticResource DataLabelStyle}"
-                   IsVisible="{Binding IsTracking}"/>
+                <!-- Display Cleared Distance -->
+                <Label Text="Distance Covered:"
+                       Style="{StaticResource InstructionLabelStyle}"
+                       IsVisible="{Binding IsTracking}"/>
 
-            <!-- Display Goal Reached Message -->
-            <Label Text="{Binding GoalReached}" 
-                   Style="{StaticResource DataLabelStyle}"
-                   TextColor="#27ae60"
-                   IsVisible="{Binding IsTracking}"
-                   HorizontalOptions="Center"/>
+                <Label Text="{Binding ClearedDistance}"
+                       Style="{StaticResource DataLabelStyle}"
+                       IsVisible="{Binding IsTracking}"/>
 
-            <!-- Start and Stop Buttons -->
-            <Button Text="Start Tracking" 
-                    Style="{StaticResource ButtonStyle}" 
-                    BackgroundColor="#3498db" 
-                    Command="{Binding StartTrackingCommand}"
-                    IsEnabled="{Binding IsActive}"
-                    IsVisible="{Binding IsNotTracking}"
-                    HorizontalOptions="Center"/>
+                <!-- Display Goal Reached Message -->
+                <Label Text="{Binding GoalReached}"
+                       Style="{StaticResource DataLabelStyle}"
+                       TextColor="#e77f67"
+                    IsVisible="{Binding IsTracking}"/>
 
-            <Button Text="Stop Tracking" 
-                    Style="{StaticResource ButtonStyle}" 
-                    BackgroundColor="#e74c3c" 
-                    Command="{Binding StopTrackingCommand}"
-                    IsVisible="{Binding IsTracking}"
-                    HorizontalOptions="Center"/>
+                    <!-- Start and Stop Buttons -->
+                    <Button Text="Start Tracking"
+                        Style="{StaticResource ButtonStyle}"
+                        BackgroundColor="#786fa6" 
+                        Command="{Binding StartTrackingCommand}"
+                        IsEnabled="{Binding IsActive}"
+                        IsVisible="{Binding IsNotTracking}"
+                        HorizontalOptions="Center"/>
 
-        </StackLayout>
-    </ScrollView>
+                        <Button Text="Stop Tracking"
+                        Style="{StaticResource ButtonStyle}"
+                        BackgroundColor="#cf6a87"
+                            Command="{Binding StopTrackingCommand}"
+                        IsVisible="{Binding IsTracking}"
+                        HorizontalOptions="Center"/>
+
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
 
 </ContentPage>
