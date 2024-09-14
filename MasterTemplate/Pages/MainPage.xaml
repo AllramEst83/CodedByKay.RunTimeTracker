@@ -6,7 +6,7 @@
     xmlns:viewmodel="clr-namespace:MasterTemplate.ViewModels"
     x:DataType="viewmodel:MainViewModel"
     BackgroundColor="#f7d794"
-    Title="Run Time Tracker">
+    Title="Run distance tracker">
 
     <ContentPage.Resources>
         <!-- Define styles for reuse -->
@@ -49,7 +49,7 @@
             <StackLayout Padding="30" Spacing="10">
 
                 <!-- App Title -->
-                <Label Text="Run Time Tracker" Style="{StaticResource TitleLabelStyle}"/>
+                <Label Text="Run distance tracker" Style="{StaticResource TitleLabelStyle}"/>
 
                 <!-- Instruction -->
                 <Label Text="Enter your target distance (km):"
@@ -97,22 +97,29 @@
                        TextColor="#e77f67"
                     IsVisible="{Binding IsTracking}"/>
 
-                    <!-- Start and Stop Buttons -->
-                    <Button Text="Start Tracking"
-                        Style="{StaticResource ButtonStyle}"
-                        BackgroundColor="#786fa6" 
-                        Command="{Binding StartTrackingCommand}"
-                        IsEnabled="{Binding IsActive}"
-                        IsVisible="{Binding IsNotTracking}"
-                        HorizontalOptions="Center"/>
+                <!-- Start and Stop Buttons -->
+                <Button Text="Start Tracking"
+                    Style="{StaticResource ButtonStyle}"
+                    BackgroundColor="#786fa6" 
+                    Command="{Binding StartTrackingCommand}"
+                    IsEnabled="{Binding IsActive}"
+                    IsVisible="{Binding IsNotTracking}"
+                    HorizontalOptions="Center"/>
 
-                        <Button Text="Stop Tracking"
-                        Style="{StaticResource ButtonStyle}"
-                        BackgroundColor="#cf6a87"
-                            Command="{Binding StopTrackingCommand}"
-                        IsVisible="{Binding IsTracking}"
-                        HorizontalOptions="Center"/>
+                    <Button Text="Stop Tracking"
+                    Style="{StaticResource ButtonStyle}"
+                    BackgroundColor="#cf6a87"
+                    Command="{Binding StopTrackingCommand}"
+                    IsVisible="{Binding IsTracking}"
+                    HorizontalOptions="Center"/>
 
+                <Label  
+                    Text="Version 0.1"
+                    FontSize="15"
+                    Margin="0,5,0,5"
+                    HorizontalOptions="Center"
+                    VerticalOptions="EndAndExpand"
+                    TextColor="#c44569"/>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

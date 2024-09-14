@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui;
+using MasterTemplate.Helper;
 using MasterTemplate.Interfaces;
 using MasterTemplate.Models;
 using MasterTemplate.Services;
@@ -58,6 +59,7 @@ configFileName = "MasterTemplate.appsettings.json";
                 .AddSingleton<IUserSecureStorageService, UserSecureStorageService>()
                 .AddSingleton<IPreferencesService, PreferencesService>()
                 .AddSingleton(AudioManager.Current)
+                .AddSingleton<IKalmanFilterService,KalmanFilterService>()
 
 #if ANDROID21_0_OR_GREATER
                 //ViewModels
@@ -68,8 +70,9 @@ configFileName = "MasterTemplate.appsettings.json";
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
-
-            return builder.Build();
+            var app = builder.Build();
+            ServiceHelper.Services = app.Services;
+            return app;
         }
     }
 }

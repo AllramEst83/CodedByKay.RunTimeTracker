@@ -4,15 +4,13 @@ using Android.Content;
 using Android.OS;
 using Android.Runtime;
 using Android.Locations;
-using System.Threading.Tasks;
-using System;
-using Microsoft.Maui.ApplicationModel;
 using Android.Media;
 using CommunityToolkit.Mvvm.Messaging;
 using MasterTemplate.Models;
 using System.Security;
 using Android.Content.PM;
 using System.Runtime.Versioning;
+using MasterTemplate.Helper;
 
 namespace MasterTemplate.Services
 {
@@ -31,11 +29,11 @@ namespace MasterTemplate.Services
         private double _totalDistance;
         private const int NotificationId = 1000;
         private const string ChannelId = "location_service_channel";
-
         private bool _pepTalk1Notified = false;
         private bool _halfwayNotified = false;
         private bool _pepTalk2Notified = false;
         private bool _endNotified = false;
+        private IKalmanFilterService _kalmanFilter;
 
         /// <summary>
         /// Creates a notification channel for the foreground service.
@@ -64,6 +62,9 @@ namespace MasterTemplate.Services
         {
             base.OnCreate();
             _locationManager = (LocationManager?)GetSystemService(LocationService);
+            _kalmanFilter = ServiceHelper.Services.GetService<IKalmanFilterService>()
+                    ?? throw new InvalidOperationException("KalmanFilter not registered.");
+
 
             ResetState();
         }
@@ -157,49 +158,66 @@ namespace MasterTemplate.Services
         /// <param name="location">The new location of the user.</param>
         public void OnLocationChanged(Android.Locations.Location location)
         {
-            if (_lastLocation != null)
+            if (location.HasAccuracy && location.Accuracy <= 100)
             {
-                _totalDistance += location.DistanceTo(_lastLocation) / 1000.0; // Convert to kilometers
+                _kalmanFilter.Process(location.Latitude, location.Longitude, location.Accuracy, location.Time);
 
-                // Calculate progress as a percentage of the total distance
-                double progressPercentage = (_totalDistance / _targetDistance) * 100;
-
-                // Play pep talk 1 at 25% progress
-                if (progressPercentage >= 25 && !_pepTalk1Notified)
+                // Create a new location with filtered coordinates
+                var filteredLocation = new Android.Locations.Location(location)
                 {
-                    PlayAudioFile("pep_talk1.m4a");
-                    _pepTalk1Notified = true;
+                    Latitude = _kalmanFilter.Latitude,
+                    Longitude = _kalmanFilter.Longitude,
+                    Accuracy = (float)_kalmanFilter.Accuracy
+                };
+
+                if (_lastLocation != null)
+                {
+                    // Calculate distance using filtered locations
+                    _totalDistance += filteredLocation.DistanceTo(_lastLocation) / 1000.0; // Convert to kilometers
+
+                    // Calculate progress as a percentage of the total distance
+                    double progressPercentage = (_totalDistance / _targetDistance) * 100;
+
+                    // Your existing notification logic
+                    HandleProgressNotifications(progressPercentage);
+
+                    // Send updated distance to the activity via WeakReferenceMessenger
+                    WeakReferenceMessenger.Default.Send(new DistanceUpdateMessage(_totalDistance));
                 }
 
-                // Play halfway audio at 50% progress
-                if (progressPercentage >= 50 && !_halfwayNotified)
-                {
-                    PlayAudioFile("half_way.m4a");
-                    _halfwayNotified = true;
-                }
+                _lastLocation = filteredLocation;
+            }
+        }
 
-                // Play pep talk 2 at 75% progress
-                if (progressPercentage >= 75 && !_pepTalk2Notified)
-                {
-                    PlayAudioFile("pep_talk2.m4a");
-                    _pepTalk2Notified = true;
-                }
-
-                // Play end audio at 100% progress
-                if (progressPercentage >= 100 && !_endNotified)
-                {
-                    PlayAudioFile("end.m4a");
-                    _endNotified = true;
-
-                    WeakReferenceMessenger.Default.Send(new GoalReachedMessage());
-                }
-
-                // Send updated distance to the activity via WeakReferenceMessenger
-                WeakReferenceMessenger.Default.Send(new DistanceUpdateMessage(_totalDistance));
+        private void HandleProgressNotifications(double progressPercentage)
+        {
+            if (progressPercentage >= 25 && !_pepTalk1Notified)
+            {
+                PlayAudioFile("pep_talk1.m4a");
+                _pepTalk1Notified = true;
             }
 
-            _lastLocation = location;
+            if (progressPercentage >= 50 && !_halfwayNotified)
+            {
+                PlayAudioFile("half_way.m4a");
+                _halfwayNotified = true;
+            }
+
+            if (progressPercentage >= 75 && !_pepTalk2Notified)
+            {
+                PlayAudioFile("pep_talk2.m4a");
+                _pepTalk2Notified = true;
+            }
+
+            if (progressPercentage >= 100 && !_endNotified)
+            {
+                PlayAudioFile("end.m4a");
+                _endNotified = true;
+
+                WeakReferenceMessenger.Default.Send(new GoalReachedMessage());
+            }
         }
+
 
         /// <summary>
         /// Plays an audio file.

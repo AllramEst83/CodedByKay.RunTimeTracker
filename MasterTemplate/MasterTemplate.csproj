@@ -13,10 +13,10 @@
     <Nullable>enable</Nullable>
 
     <!-- Display name -->
-    <ApplicationTitle>RunTimeTracker</ApplicationTitle>
+    <ApplicationTitle>RunDistanceTracker</ApplicationTitle>
 
     <!-- App Identifier -->
-    <ApplicationId>com.codedbykay.runtimetracker</ApplicationId>
+    <ApplicationId>com.codedbykay.rundistancetracker</ApplicationId>
 
     <!-- Versions -->
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -28,14 +28,12 @@
 
   <ItemGroup>
     <!-- App Icon -->
-    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
-
+    <MauiIcon Include="Resources\AppIcon\appicon.png" Color="#55efc4" ForegroundScale="0.9" TintColor="#55efc4"/>
+    
     <!-- Splash Screen -->
-    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
-
+    <MauiSplashScreen Include="Resources\Splash\splash.png" Color="#55efc4" BaseSize="150, 84" />
     <!-- Images -->
     <MauiImage Include="Resources\Images\*" />
-    <MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
 
     <!-- Custom Fonts -->
     <MauiFont Include="Resources\Fonts\*" />
@@ -44,13 +42,6 @@
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
-  <ItemGroup>
-    <!-- Remove unnecessary None items -->
-    <None Remove="Resources\raw\end.m4a" />
-    <None Remove="Resources\raw\half_way.m4a" />
-    <None Remove="Resources\raw\pep_talk1.m4a" />
-    <None Remove="Resources\raw\pep_talk2.m4a" />
-  </ItemGroup>
 
   <ItemGroup>
     <!-- Embedded resources -->

@@ -45,7 +45,7 @@ namespace MasterTemplate.ViewModels
                 return;
             }
 
-            Intent intent = new Intent(Android.App.Application.Context, typeof(LocationService));
+            Intent intent = new(Android.App.Application.Context, typeof(LocationService));
             intent.PutExtra("TargetDistance", TargetDistance);
             if (OperatingSystem.IsAndroidVersionAtLeast(26))
             {
