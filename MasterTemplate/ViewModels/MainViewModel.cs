@@ -54,8 +54,15 @@ namespace MasterTemplate.ViewModels
         [RelayCommand]
         private void StopTracking()
         {
-            Intent intent = new(Android.App.Application.Context, typeof(LocationService));
-            Android.App.Application.Context.StopService(intent);
+            Intent intent = new Intent(Android.App.Application.Context, typeof(LocationService));
+            if (OperatingSystem.IsAndroidVersionAtLeast(26))
+            {
+                Android.App.Application.Context.StartForegroundService(intent);
+            }
+            else
+            {
+                Android.App.Application.Context.StartService(intent);
+            }
 
             WeakReferenceMessenger.Default.Unregister<DistanceUpdateMessage>(this);
             WeakReferenceMessenger.Default.Unregister<GoalReachedMessage>(this);

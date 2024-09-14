@@ -17,9 +17,9 @@ namespace MasterTemplate.Services
             }
 
             // Get the GUID as a serialized JSON string
-            var jsonString = Preferences.Default.Get<string>(key, null);
+            var jsonString = Preferences.Default.Get<string>(key, string.Empty);
 
-            // If for some reason it's still null, return null
+            // If for some reason it's still null or empty, return null
             if (string.IsNullOrEmpty(jsonString)) return null;
 
             // Deserialize the JSON string back to Guid
@@ -34,8 +34,6 @@ namespace MasterTemplate.Services
                 return null;
             }
         }
-
-
 
         /// <summary>
         /// Retrieves a preference value of the specified type associated with the specified key.

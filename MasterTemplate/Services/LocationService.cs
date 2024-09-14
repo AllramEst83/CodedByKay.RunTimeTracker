@@ -46,12 +46,13 @@ namespace MasterTemplate.Services
             {
                 var channelName = "Location Service";
                 var channelDescription = "Notification channel for location service";
-                NotificationChannel channel = new(ChannelId, channelName, NotificationImportance.Low)
+                NotificationChannel channel = new NotificationChannel(ChannelId, channelName, NotificationImportance.Low)
                 {
                     Description = channelDescription
                 };
 
-                var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+                // Safe cast and nullable variable
+                NotificationManager? notificationManager = GetSystemService(NotificationService) as NotificationManager;
                 notificationManager?.CreateNotificationChannel(channel);
             }
         }
@@ -210,12 +211,24 @@ namespace MasterTemplate.Services
             {
                 _mediaPlayer?.Reset();
 
-                var audioAssetStream = Android.App.Application.Context.Assets.OpenFd(fileName);
-                if (audioAssetStream != null && _mediaPlayer != null)
+                var appContext = Android.App.Application.Context;
+                if (appContext != null)
                 {
-                    _mediaPlayer.SetDataSource(audioAssetStream.FileDescriptor, audioAssetStream.StartOffset, audioAssetStream.Length);
-                    _mediaPlayer.Prepare();
-                    _mediaPlayer.Start();
+                    var audioAssetStream = appContext?.Assets?.OpenFd(fileName);
+                    if (audioAssetStream != null && _mediaPlayer != null)
+                    {
+                        _mediaPlayer.SetDataSource(audioAssetStream.FileDescriptor, audioAssetStream.StartOffset, audioAssetStream.Length);
+                        _mediaPlayer.Prepare();
+                        _mediaPlayer.Start();
+                    }
+                    else
+                    {
+                        Android.Util.Log.Error("LocationService", "Audio asset stream or media player is null.");
+                    }
+                }
+                else
+                {
+                    Android.Util.Log.Error("LocationService", "Application context is null.");
                 }
             }
             catch (Exception ex)
@@ -223,6 +236,7 @@ namespace MasterTemplate.Services
                 Android.Util.Log.Error("LocationService", $"Error playing audio file {fileName}: {ex.Message}");
             }
         }
+
 
         /// <summary>
         /// Cleans up the service when it is destroyed.
@@ -233,19 +247,21 @@ namespace MasterTemplate.Services
             _mediaPlayer?.Release();
             _mediaPlayer = null;
 
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu) // API level 33 (Android 13)
+            if (OperatingSystem.IsAndroidVersionAtLeast(33))
             {
+                // No annotation needed here as the analyzer recognizes the guard
                 StopForeground(StopForegroundFlags.Remove);
             }
             else
             {
-                StopForeground(true); // For older API levels
+                // For older API levels
+                StopForeground(true);
             }
 
-            StopSelf(); // Stop the service itself
-
+            StopSelf();
             base.OnDestroy();
         }
+
 
 
         /// <summary>
