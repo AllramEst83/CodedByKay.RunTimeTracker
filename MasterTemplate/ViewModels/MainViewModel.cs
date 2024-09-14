@@ -1,7 +1,4 @@
-﻿#if ANDROID26_0_OR_GREATER
-using Android.Content;
-using Java.Lang.Annotation;
-using Android.Webkit;
+﻿using Android.Content;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MasterTemplate.Services;
@@ -9,33 +6,40 @@ using System;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Messaging;
 using MasterTemplate.Models;
-using System.Runtime.Versioning;
 
 namespace MasterTemplate.ViewModels
 {
-    [SupportedOSPlatform("android26.0")]
     public partial class MainViewModel : ObservableObject
     {
+        // Existing properties
         [ObservableProperty]
-        private double _targetDistance = 1;
-        
-        [ObservableProperty]
-        private string _clearedDistance = string.Empty;
+        private double targetDistance = 1;
 
         [ObservableProperty]
-        private string _goalReached = string.Empty;
+        private string clearedDistance = string.Empty;
 
         [ObservableProperty]
-        private bool _isVisble = true;
+        private string goalReached = string.Empty;
 
         [ObservableProperty]
-        private bool _isActive = true;
+        private bool isVisible = true;
 
+        [ObservableProperty]
+        private bool isActive = true;
+
+        // New properties
+        [ObservableProperty]
+        private bool isTracking = false;
+
+        public bool IsNotTracking => !IsTracking;
+
+        [ObservableProperty]
+        private string displayTargetDistance = string.Empty;
 
         [RelayCommand]
         private async Task StartTracking()
         {
-           var permissionGranted =  await GetLocationPermission();
+            var permissionGranted = await GetLocationPermission();
             if (!permissionGranted)
             {
                 return;
@@ -43,18 +47,6 @@ namespace MasterTemplate.ViewModels
 
             Intent intent = new Intent(Android.App.Application.Context, typeof(LocationService));
             intent.PutExtra("TargetDistance", TargetDistance);
-            Android.App.Application.Context.StartService(intent);
-
-            ClearedDistance = "0 km";
-            StartListeningForUpdates();
-            IsActive = false;
-            IsVisble = false;
-        }
-
-        [RelayCommand]
-        private void StopTracking()
-        {
-            Intent intent = new Intent(Android.App.Application.Context, typeof(LocationService));
             if (OperatingSystem.IsAndroidVersionAtLeast(26))
             {
                 Android.App.Application.Context.StartForegroundService(intent);
@@ -64,12 +56,31 @@ namespace MasterTemplate.ViewModels
                 Android.App.Application.Context.StartService(intent);
             }
 
+            ClearedDistance = "0 km";
+            DisplayTargetDistance = $"{TargetDistance} km";
+            StartListeningForUpdates();
+            IsActive = false;
+            IsVisible = false;
+            IsTracking = true;
+            OnPropertyChanged(nameof(IsNotTracking));
+        }
+
+        [RelayCommand]
+        private void StopTracking()
+        {
+            Intent intent = new Intent(Android.App.Application.Context, typeof(LocationService));
+            Android.App.Application.Context.StopService(intent);
+
             WeakReferenceMessenger.Default.Unregister<DistanceUpdateMessage>(this);
             WeakReferenceMessenger.Default.Unregister<GoalReachedMessage>(this);
+
             ClearedDistance = string.Empty;
             GoalReached = string.Empty;
+            DisplayTargetDistance = string.Empty;
             IsActive = true;
-            IsVisble = true;
+            IsVisible = true;
+            IsTracking = false;
+            OnPropertyChanged(nameof(IsNotTracking));
         }
 
         private void StartListeningForUpdates()
@@ -90,28 +101,19 @@ namespace MasterTemplate.ViewModels
 
             WeakReferenceMessenger.Default.Register<GoalReachedMessage>(this, (recipient, message) =>
             {
-                GoalReached = $"Boom! Bra jobbat! {TargetDistance} km avklarad";
+                GoalReached = $"Boom! Great job! {TargetDistance} km completed!";
             });
         }
 
         private async Task<bool> GetLocationPermission()
         {
-            // Check and request location permission
             var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
             if (status != PermissionStatus.Granted)
             {
                 status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
             }
 
-            if (status != PermissionStatus.Granted)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return status == PermissionStatus.Granted;
         }
     }
 }
-#endif
