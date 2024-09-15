@@ -2,10 +2,10 @@
 <ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="MasterTemplate.MainPage"
+    x:Class="MasterTemplate.Pages.MainPage"
     xmlns:viewmodel="clr-namespace:MasterTemplate.ViewModels"
     x:DataType="viewmodel:MainViewModel"
-    BackgroundColor="#f7d794"
+    BackgroundColor="{StaticResource App_Primary_Background}"
     Title="Run distance tracker">
 
     <ContentPage.Resources>
@@ -108,7 +108,7 @@
 
                     <Button Text="Stop Tracking"
                     Style="{StaticResource ButtonStyle}"
-                    BackgroundColor="#cf6a87"
+                    BackgroundColor="#ff4d4d"
                     Command="{Binding StopTrackingCommand}"
                     IsVisible="{Binding IsTracking}"
                     HorizontalOptions="Center"/>

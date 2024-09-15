@@ -2,8 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MasterTemplate.Services;
-using System;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Messaging;
 using MasterTemplate.Models;
 

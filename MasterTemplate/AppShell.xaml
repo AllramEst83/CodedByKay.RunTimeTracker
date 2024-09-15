@@ -3,13 +3,38 @@
     x:Class="MasterTemplate.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:MasterTemplate"
+    xmlns:local="clr-namespace:MasterTemplate.Pages"
     Shell.FlyoutBehavior="Disabled"
-    Title="MasterTemplate">
+    Title="Run distance tracker">
+    
+    
+    <!-- Tab Bar for Bottom Navigation -->
+    <TabBar
+        Shell.ForegroundColor="#303952"
+        Shell.BackgroundColor="{StaticResource App_Primary_Background}"
+        Shell.TitleColor="#303952"
+        Shell.DisabledColor="#95a5a6"
+        Shell.UnselectedColor="#7f8c8d"
+        >
+        <!-- First Tab: Home -->
+        <Tab Title="Track distance" Icon="home_icon.png">
+            <ShellContent
+                Title="Distance"
+                ContentTemplate="{DataTemplate local:MainPage}"
+                Route="MainPage" 
+                Icon="pinpin.png"/>
+        </Tab>
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        <!-- Second Tab: Settings (example) -->
+        <Tab Title="Track session" Icon="settings_icon.png">
+            <ShellContent
+                Title="Session"
+                ContentTemplate="{DataTemplate local:RunSessionPage}"
+                Route="RunSessionPage" 
+                Icon="userrunning.png"/>
+        </Tab>
+
+        <!-- Add more tabs as needed -->
+    </TabBar>
 
 </Shell>

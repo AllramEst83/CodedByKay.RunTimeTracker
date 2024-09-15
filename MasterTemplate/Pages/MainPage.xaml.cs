@@ -1,7 +1,7 @@
 ﻿#if ANDROID21_0_OR_GREATER
 using MasterTemplate.ViewModels;
 
-namespace MasterTemplate
+namespace MasterTemplate.Pages
 {
     public partial class MainPage : ContentPage
     {

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewmodel="clr-namespace:MasterTemplate.ViewModels"
+             x:DataType="viewmodel:RunSessionViewModel"
+             x:Class="MasterTemplate.Pages.RunSessionPage"
+             BackgroundColor="{StaticResource App_Primary_Background}"
+             Title="Run session">
+
+    <Grid RowDefinitions="*,Auto" Padding="20">
+        <!-- Middle Section for Distance and Time -->
+        <VerticalStackLayout Grid.Row="0"
+                             VerticalOptions="Center" 
+                             HorizontalOptions="Center"
+                             Spacing="20">
+
+            <!-- Distance Traveled Card -->
+            <Frame BackgroundColor="White"
+                   CornerRadius="10"
+                   HasShadow="True"
+                   Padding="20"
+                   WidthRequest="300">
+                <VerticalStackLayout HorizontalOptions="Center">
+                    <Label Text="Distance Traveled:"
+                           FontSize="20"
+                           TextColor="#303952"
+                           HorizontalOptions="Center" />
+
+                    <Label Text="{Binding DistanceTraveled, StringFormat='{0:F2} km'}" 
+                           FontSize="28" 
+                           FontAttributes="Bold"
+                           TextColor="#3c40c6" 
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Running Time Card -->
+            <Frame BackgroundColor="White"
+                   CornerRadius="10"
+                   HasShadow="True"
+                   Padding="20"
+                   WidthRequest="300">
+                <VerticalStackLayout HorizontalOptions="Center">
+                    <Label Text="Running Time:"
+                           FontSize="20"
+                           TextColor="#303952"
+                           HorizontalOptions="Center" />
+
+                    <Label Text="{Binding RunningTime}" 
+                           FontSize="28" 
+                           FontAttributes="Bold"
+                           TextColor="#3c40c6" 
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+
+        <!-- Buttons at the Bottom -->
+        <Grid Grid.Row="1" Padding="0" ColumnSpacing="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Stop Button (Left) -->
+            <Border StrokeThickness="0" Stroke="{Binding StopBorderColor}" BackgroundColor="{Binding StopBorderColor}" 
+            Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+            StrokeShape="RoundRectangle 15,0,15,0">
+                <Button Text="Stop"
+                TextColor="Black"
+                FontSize="20"
+                Command="{Binding StopSessionCommand}"
+                BackgroundColor="Transparent"
+                WidthRequest="100"
+                IsEnabled="{Binding IsUnLocked}">
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="Disabled">
+                                <VisualState.Setters>
+                                    <!-- Set the disabled background color from ViewModel -->
+                                    <Setter Property="BackgroundColor" Value="{DynamicResource StopBorderColor}" />
+                                    <!-- Set the disabled text color -->
+                                    <Setter Property="TextColor" Value="Gray" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                </Button>
+            </Border>
+
+            <!-- Lock/Unlock Button (Middle) -->
+            <Border StrokeThickness="0" Stroke="{Binding LockBorderColor}" BackgroundColor="{Binding LockBorderColor}" 
+            Grid.Column="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+            StrokeShape="RoundRectangle 0,0,0,0">
+                <Button Text="{Binding LockButtonText}"
+                TextColor="Black"
+                FontSize="20"
+                Command="{Binding LockUnlockCommand}"
+                BackgroundColor="Transparent"
+                WidthRequest="100"
+                />
+            </Border>
+
+            <!-- Start/Pause/Resume Button (Right) -->
+            <Border StrokeThickness="0" Stroke="{Binding StartBorderColor}" BackgroundColor="{Binding StartBorderColor}" 
+            Grid.Column="2" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+            StrokeShape="RoundRectangle 0,15,0,15">
+                <Button 
+            Text="{Binding StartButtonText}"
+            TextColor="Black"
+            FontSize="20"
+            Command="{Binding StartPauseResumeCommand}"
+            BackgroundColor="Transparent"
+            WidthRequest="100"
+            IsEnabled="{Binding IsUnLocked}"
+          >
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="Disabled">
+                                <VisualState.Setters>
+                                    <!-- Set the disabled background color from ViewModel -->
+                                    <Setter Property="BackgroundColor" Value="{DynamicResource StartBorderColor}" />
+                                    <!-- Set the disabled text color -->
+                                    <Setter Property="TextColor" Value="Gray" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                </Button>
+            </Border>
+        </Grid>
+
+
+
+    </Grid>
+
+</ContentPage>

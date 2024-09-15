@@ -2,6 +2,7 @@
 using MasterTemplate.Helper;
 using MasterTemplate.Interfaces;
 using MasterTemplate.Models;
+using MasterTemplate.Pages;
 using MasterTemplate.Services;
 using MasterTemplate.ViewModels;
 using Microsoft.Extensions.Configuration;
@@ -64,9 +65,11 @@ configFileName = "MasterTemplate.appsettings.json";
 #if ANDROID21_0_OR_GREATER
                 //ViewModels
                 .AddSingleton<MainViewModel>()
+                .AddSingleton<RunSessionViewModel>()
 #endif
                 //Pages
-                .AddSingleton<MainPage>();
+                .AddSingleton<MainPage>()
+                .AddSingleton<RunSessionPage>();
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

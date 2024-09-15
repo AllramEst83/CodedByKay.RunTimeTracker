@@ -28,12 +28,18 @@
 
   <ItemGroup>
     <!-- App Icon -->
-    <MauiIcon Include="Resources\AppIcon\appicon.png" Color="#55efc4" ForegroundScale="0.9" TintColor="#55efc4"/>
+    <MauiIcon Include="Resources\AppIcon\appicon.png" BaseSize="1024,1792" Color="#55efc4" ForegroundScale="0.90" />
+    
+    <!--Icons-->
+    <MauiImage Include="Resources\Icons\pinpin.png" />
+    <MauiImage Include="Resources\Icons\userrunning.png" />
     
     <!-- Splash Screen -->
     <MauiSplashScreen Include="Resources\Splash\splash.png" Color="#55efc4" BaseSize="150, 84" />
     <!-- Images -->
     <MauiImage Include="Resources\Images\*" />
+
+    <!-- AppIcons -->
 
     <!-- Custom Fonts -->
     <MauiFont Include="Resources\Fonts\*" />
@@ -41,6 +47,7 @@
     <!-- Raw Assets -->
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
+
 
 
   <ItemGroup>
@@ -66,6 +73,12 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Plugin.Maui.Audio" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MauiXaml Update="Pages\RunSessionPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
   </ItemGroup>
 
 </Project>

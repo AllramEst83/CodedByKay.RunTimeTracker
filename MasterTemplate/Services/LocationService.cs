@@ -21,6 +21,10 @@ namespace MasterTemplate.Services
     [SupportedOSPlatform("android26.0")]
     public class LocationService : Service, ILocationListener
     {
+        public void OnProviderDisabled(string provider) { }
+        public void OnProviderEnabled(string provider) { }
+        public void OnStatusChanged(string? provider, [GeneratedEnum] Availability status, Bundle? extras) { }
+
         private LocationManager? _locationManager = null;
         private string? _locationProvider = null;
         private Android.Locations.Location? _lastLocation = null;
@@ -280,8 +284,6 @@ namespace MasterTemplate.Services
             base.OnDestroy();
         }
 
-
-
         /// <summary>
         /// Resets the state of the service.
         /// </summary>
@@ -294,10 +296,6 @@ namespace MasterTemplate.Services
             _totalDistance = 0;
             _lastLocation = null;
         }
-
-        public void OnProviderDisabled(string provider) { }
-        public void OnProviderEnabled(string provider) { }
-        public void OnStatusChanged(string? provider, [GeneratedEnum] Availability status, Bundle? extras) { }
     }
 }
 #endif
