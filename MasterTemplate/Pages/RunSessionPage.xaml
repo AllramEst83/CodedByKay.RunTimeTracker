@@ -75,6 +75,7 @@
                 Command="{Binding StopSessionCommand}"
                 BackgroundColor="Transparent"
                 WidthRequest="100"
+                HeightRequest="55"
                 IsEnabled="{Binding IsUnLocked}">
                     <VisualStateManager.VisualStateGroups>
                         <VisualStateGroup x:Name="CommonStates">
@@ -102,6 +103,7 @@
                 Command="{Binding LockUnlockCommand}"
                 BackgroundColor="Transparent"
                 WidthRequest="100"
+                HeightRequest="55"
                 />
             </Border>
 
@@ -116,6 +118,7 @@
             Command="{Binding StartPauseResumeCommand}"
             BackgroundColor="Transparent"
             WidthRequest="100"
+            HeightRequest="55"
             IsEnabled="{Binding IsUnLocked}"
           >
                     <VisualStateManager.VisualStateGroups>
