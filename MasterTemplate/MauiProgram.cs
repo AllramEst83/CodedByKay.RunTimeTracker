@@ -3,6 +3,7 @@ using MasterTemplate.Helper;
 using MasterTemplate.Interfaces;
 using MasterTemplate.Models;
 using MasterTemplate.Pages;
+using MasterTemplate.Platforms.Android;
 using MasterTemplate.Services;
 using MasterTemplate.ViewModels;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +19,10 @@ namespace MasterTemplate
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .ConfigureMauiHandlers(handlers =>
+                {
+                    handlers.AddHandler(typeof(AppShell), typeof(AppShellRenderer));
+                })
                 .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
@@ -60,7 +65,8 @@ configFileName = "MasterTemplate.appsettings.json";
                 .AddSingleton<IUserSecureStorageService, UserSecureStorageService>()
                 .AddSingleton<IPreferencesService, PreferencesService>()
                 .AddSingleton(AudioManager.Current)
-                .AddSingleton<IKalmanFilterService,KalmanFilterService>()
+                .AddSingleton<IKalmanFilterService, KalmanFilterService>()
+                .AddSingleton<IAudioService, AudioService>()
 
 #if ANDROID21_0_OR_GREATER
                 //ViewModels

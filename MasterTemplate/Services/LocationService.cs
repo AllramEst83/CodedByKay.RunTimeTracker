@@ -4,7 +4,6 @@ using Android.Content;
 using Android.OS;
 using Android.Runtime;
 using Android.Locations;
-using Android.Media;
 using CommunityToolkit.Mvvm.Messaging;
 using MasterTemplate.Models;
 using System.Security;
@@ -24,11 +23,11 @@ namespace MasterTemplate.Services
         public void OnProviderDisabled(string provider) { }
         public void OnProviderEnabled(string provider) { }
         public void OnStatusChanged(string? provider, [GeneratedEnum] Availability status, Bundle? extras) { }
+        public static bool IsRunning { get; private set; }
 
         private LocationManager? _locationManager = null;
         private string? _locationProvider = null;
         private Android.Locations.Location? _lastLocation = null;
-        private MediaPlayer? _mediaPlayer = null;
         private double _targetDistance;
         private double _totalDistance;
         private const int NotificationId = 1000;
@@ -38,6 +37,7 @@ namespace MasterTemplate.Services
         private bool _pepTalk2Notified = false;
         private bool _endNotified = false;
         private IKalmanFilterService _kalmanFilter;
+        private IAudioService _audioService;
 
         /// <summary>
         /// Creates a notification channel for the foreground service.
@@ -48,7 +48,7 @@ namespace MasterTemplate.Services
             {
                 var channelName = "Location Service";
                 var channelDescription = "Notification channel for location service";
-                NotificationChannel channel = new NotificationChannel(ChannelId, channelName, NotificationImportance.Low)
+                NotificationChannel channel = new(ChannelId, channelName, NotificationImportance.Low)
                 {
                     Description = channelDescription
                 };
@@ -68,6 +68,8 @@ namespace MasterTemplate.Services
             _locationManager = (LocationManager?)GetSystemService(LocationService);
             _kalmanFilter = ServiceHelper.Services.GetService<IKalmanFilterService>()
                     ?? throw new InvalidOperationException("KalmanFilter not registered.");
+            _audioService = ServiceHelper.Services.GetService<IAudioService>()
+                ?? throw new InvalidOperationException("AudioService not registered.");
 
 
             ResetState();
@@ -97,8 +99,6 @@ namespace MasterTemplate.Services
                 StopSelf(); // Stop service if permissions are not granted
                 return StartCommandResult.NotSticky;
             }
-
-            _mediaPlayer ??= new MediaPlayer();
 
             CreateNotificationChannel();
 
@@ -141,6 +141,8 @@ namespace MasterTemplate.Services
                 StopSelf();
                 return StartCommandResult.NotSticky;
             }
+
+            IsRunning = true;
 
             return StartCommandResult.Sticky;
         }
@@ -197,68 +199,30 @@ namespace MasterTemplate.Services
         {
             if (progressPercentage >= 25 && !_pepTalk1Notified)
             {
-                PlayAudioFile("pep_talk1.m4a");
+                _audioService.PlayAudioFile("pep_talk1.m4a");
                 _pepTalk1Notified = true;
             }
 
             if (progressPercentage >= 50 && !_halfwayNotified)
             {
-                PlayAudioFile("half_way.m4a");
+                _audioService.PlayAudioFile("half_way.m4a");
                 _halfwayNotified = true;
             }
 
             if (progressPercentage >= 75 && !_pepTalk2Notified)
             {
-                PlayAudioFile("pep_talk2.m4a");
+                _audioService.PlayAudioFile("pep_talk2.m4a");
                 _pepTalk2Notified = true;
             }
 
             if (progressPercentage >= 100 && !_endNotified)
             {
-                PlayAudioFile("end.m4a");
+                _audioService.PlayAudioFile("end.m4a");
                 _endNotified = true;
 
                 WeakReferenceMessenger.Default.Send(new GoalReachedMessage());
             }
         }
-
-
-        /// <summary>
-        /// Plays an audio file.
-        /// </summary>
-        /// <param name="fileName">The name of the audio file to play.</param>
-        private void PlayAudioFile(string fileName)
-        {
-            try
-            {
-                _mediaPlayer?.Reset();
-
-                var appContext = Android.App.Application.Context;
-                if (appContext != null)
-                {
-                    var audioAssetStream = appContext?.Assets?.OpenFd(fileName);
-                    if (audioAssetStream != null && _mediaPlayer != null)
-                    {
-                        _mediaPlayer.SetDataSource(audioAssetStream.FileDescriptor, audioAssetStream.StartOffset, audioAssetStream.Length);
-                        _mediaPlayer.Prepare();
-                        _mediaPlayer.Start();
-                    }
-                    else
-                    {
-                        Android.Util.Log.Error("LocationService", "Audio asset stream or media player is null.");
-                    }
-                }
-                else
-                {
-                    Android.Util.Log.Error("LocationService", "Application context is null.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Android.Util.Log.Error("LocationService", $"Error playing audio file {fileName}: {ex.Message}");
-            }
-        }
-
 
         /// <summary>
         /// Cleans up the service when it is destroyed.
@@ -266,8 +230,8 @@ namespace MasterTemplate.Services
         public override void OnDestroy()
         {
             _locationManager?.RemoveUpdates(this);
-            _mediaPlayer?.Release();
-            _mediaPlayer = null;
+            _audioService.ReleaseMediaPlayer();
+            _audioService.DestroyMediaPlayer();
 
             if (OperatingSystem.IsAndroidVersionAtLeast(33))
             {
@@ -282,6 +246,7 @@ namespace MasterTemplate.Services
 
             StopSelf();
             base.OnDestroy();
+            IsRunning = false;
         }
 
         /// <summary>

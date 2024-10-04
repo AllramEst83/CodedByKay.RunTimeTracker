@@ -17,21 +17,19 @@
         Shell.UnselectedColor="#7f8c8d"
         >
         <!-- First Tab: Home -->
-        <Tab Title="Track distance" Icon="home_icon.png">
+        <Tab Title="Track distance" Icon="pinpin.png">
             <ShellContent
                 Title="Distance"
                 ContentTemplate="{DataTemplate local:MainPage}"
-                Route="MainPage" 
-                Icon="pinpin.png"/>
+                Route="MainPage"/>
         </Tab>
 
         <!-- Second Tab: Settings (example) -->
-        <Tab Title="Track session" Icon="settings_icon.png">
+        <Tab Title="Track session" Icon="userrunning.png">
             <ShellContent
                 Title="Session"
                 ContentTemplate="{DataTemplate local:RunSessionPage}"
-                Route="RunSessionPage" 
-                Icon="userrunning.png"/>
+                Route="RunSessionPage"/>
         </Tab>
 
         <!-- Add more tabs as needed -->

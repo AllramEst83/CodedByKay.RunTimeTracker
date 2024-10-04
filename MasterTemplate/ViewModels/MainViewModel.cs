@@ -69,9 +69,6 @@ namespace MasterTemplate.ViewModels
             Intent intent = new Intent(Android.App.Application.Context, typeof(LocationService));
             Android.App.Application.Context.StopService(intent);
 
-            WeakReferenceMessenger.Default.Unregister<DistanceUpdateMessage>(this);
-            WeakReferenceMessenger.Default.Unregister<GoalReachedMessage>(this);
-
             ClearedDistance = string.Empty;
             GoalReached = string.Empty;
             DisplayTargetDistance = string.Empty;
@@ -112,6 +109,13 @@ namespace MasterTemplate.ViewModels
             }
 
             return status == PermissionStatus.Granted;
+        }
+
+        // Cleanup (Optional, if you plan to dispose ViewModels)
+        ~MainViewModel()
+        {
+            WeakReferenceMessenger.Default.Unregister<DistanceUpdateMessage>(this);
+            WeakReferenceMessenger.Default.Unregister<GoalReachedMessage>(this);
         }
     }
 }

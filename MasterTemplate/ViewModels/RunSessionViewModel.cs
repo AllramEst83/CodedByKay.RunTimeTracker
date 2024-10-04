@@ -108,11 +108,8 @@ namespace MasterTemplate.ViewModels
         /// </summary>
         [RelayCommand]
         private void StopSession()
-        {
-            if (IsRunning)
-            {
-                EndSession();
-            }
+        {  
+            EndSession();            
         }
 
         /// <summary>
