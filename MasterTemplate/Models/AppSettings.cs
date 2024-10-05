@@ -2,6 +2,7 @@
 {
     public class AppSettings
     {
-        public string Test { get; set; } = string.Empty;
+        public double AppVersion { get; set; } = 0.0;
+        public string KalmanFilterKey { get; set; } = string.Empty;
     }
 }

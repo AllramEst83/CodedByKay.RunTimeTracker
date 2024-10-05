@@ -1,21 +1,22 @@
+using AndroidX.Lifecycle;
 using MasterTemplate.ViewModels;
 
 namespace MasterTemplate.Pages;
 
-public partial class RunSessionPage : ContentPage
+public partial class SettingsPage : ContentPage
 {
-    private readonly RunSessionViewModel? viewModel;
+    private readonly SettingsViewModel? viewModel;
 
-    public RunSessionPage()
-    {
-        InitializeComponent();
+    public SettingsPage()
+	{
+		InitializeComponent();
 
         if (Application.Current?.Handler?.MauiContext?.Services is not null)
         {
-            viewModel = Application.Current.Handler.MauiContext.Services.GetService<RunSessionViewModel>();
+            viewModel = Application.Current.Handler.MauiContext.Services.GetService<SettingsViewModel>();
             if (viewModel is null)
             {
-                throw new InvalidOperationException("RunSessionViewModel service not found.");
+                throw new InvalidOperationException("SettingsViewModel service not found.");
             }
         }
         else

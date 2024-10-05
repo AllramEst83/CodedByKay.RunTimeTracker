@@ -28,12 +28,7 @@
 
   <ItemGroup>
     <!-- App Icon -->
-    <MauiIcon Include="Resources\AppIcon\appicon.png" BaseSize="1024,1792" Color="#55efc4" ForegroundScale="0.90" />
-    
-    <!--Icons-->
-    <MauiImage Include="Resources\Icons\pinpin.png" />
-    <MauiImage Include="Resources\Icons\userrunning.png" />
-    
+    <MauiIcon Include="Resources\AppIcon\appicon.png" BaseSize="1024,1792" Color="#55efc4" ForegroundScale="0.90" />    
     <!-- Splash Screen -->
     <MauiSplashScreen Include="Resources\Splash\splash.png" Color="#55efc4" BaseSize="150, 84" />
     <!-- Images -->
@@ -76,7 +71,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <MauiXaml Update="Pages\RunSessionPage.xaml">
+    <Folder Include="Resources\Icons\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MauiXaml Update="Pages\SettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
   </ItemGroup>

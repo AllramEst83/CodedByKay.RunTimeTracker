@@ -71,11 +71,11 @@ configFileName = "MasterTemplate.appsettings.json";
 #if ANDROID21_0_OR_GREATER
                 //ViewModels
                 .AddSingleton<MainViewModel>()
-                .AddSingleton<RunSessionViewModel>()
+                  .AddSingleton<SettingsViewModel>()
 #endif
                 //Pages
                 .AddSingleton<MainPage>()
-                .AddSingleton<RunSessionPage>();
+                .AddSingleton<SettingsPage>();
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

@@ -1,4 +1,9 @@
-﻿namespace MasterTemplate.Services
+﻿using MasterTemplate.Interfaces;
+using MasterTemplate.Models;
+using MasterTemplate.ViewModels;
+using Microsoft.Extensions.Options;
+
+namespace MasterTemplate.Services
 {
     /// <summary>
     /// Kalman filter service for processing latitude, longitude, and accuracy.
@@ -47,6 +52,8 @@
         /// </summary>
         public double Accuracy => Math.Sqrt(_variance);
 
+        public IPreferencesService _preferencesService { get; }
+
         private double _latitude;
         private double _longitude;
         private double _variance;
@@ -65,11 +72,27 @@
         //   Values closer to 1 give more weight to the measurements (default = 0.9).
         private readonly double _smoothingFactor;
 
-        public KalmanFilterService()
+        private readonly AppSettings _appSettings;
+
+        public KalmanFilterService(IPreferencesService preferencesService, IOptions<AppSettings> appSettings)
         {
-            _baseQ = 0.01; // Slightly increased process noise for improved accuracy
+            _preferencesService = preferencesService;
+            _appSettings = appSettings.Value;
+
+            var kalmanFilterData = _preferencesService.Get<KalmanFilterData>(_appSettings.KalmanFilterKey);
+            if (kalmanFilterData != null)
+            {
+                _baseQ = kalmanFilterData.BaseQ; // Slightly increased process noise for improved accuracy
+                _smoothingFactor = kalmanFilterData.SmoothingFactor; // Smoothing factor: 0.9 means trust measurements slightly more
+                _preferencesService = preferencesService;
+            }
+            else
+            {
+                _baseQ = 0.001; // Slightly increased process noise for improved accuracy
+                _smoothingFactor = 0.9; // Smoothing factor: 0.9 means trust measurements slightly more
+            }
+
             _variance = -1;
-            _smoothingFactor = 0.9; // Smoothing factor: 0.9 means trust measurements slightly more
         }
 
         /// <summary>

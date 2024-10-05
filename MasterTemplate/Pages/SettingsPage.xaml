@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodel="clr-namespace:MasterTemplate.ViewModels"
+    x:Class="MasterTemplate.Pages.SettingsPage"
+    x:DataType="viewmodel:SettingsViewModel"
+    BackgroundColor="{StaticResource App_Primary_Background}"
+    Title="Kalman Filter Settings">
+
+    <ContentPage.Resources>
+        <!-- Reuse Styles from MainPage -->
+        <Style x:Key="TitleLabelStyle" TargetType="Label">
+            <Setter Property="FontSize" Value="28" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="TextColor" Value="#303952" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="Margin" Value="0,20,0,10" />
+        </Style>
+
+        <Style x:Key="ExplanationLabelStyle" TargetType="Label">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="TextColor" Value="Black" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="Margin" Value="0,5,0,5" />
+        </Style>
+
+        <Style x:Key="InstructionLabelStyle" TargetType="Label">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="TextColor" Value="#303952" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="Margin" Value="0,10,0,5" />
+        </Style>
+
+        <Style x:Key="EntryStyle" TargetType="Entry">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="TextColor" Value="#303952" />
+            <Setter Property="WidthRequest" Value="200" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+        </Style>
+
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="FontSize" Value="22" />
+            <Setter Property="TextColor" Value="Black" />
+            <Setter Property="WidthRequest" Value="200" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Margin" Value="0,10,0,0" />
+        </Style>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="30" Spacing="10">
+                <Label Text="Kalman Filter Settings" Style="{StaticResource TitleLabelStyle}" />
+                <Frame BackgroundColor="#f4c9d7" BorderColor="#303952" CornerRadius="10" Padding="10" Margin="10">
+                    <StackLayout Padding="10">
+                        <!-- Title -->
+                        <!-- Base Q Value -->
+                        <Label  Text="Base process noise. Controls how much the filter smooths out the measurements. Values close to 0.001 make the filter smoother and less responsive to rapid changes, but more stable over time." 
+                                Style="{StaticResource ExplanationLabelStyle}" />
+                        <Label Text="Enter Base Q Value:" Style="{StaticResource InstructionLabelStyle}" />
+                        <Frame CornerRadius="5" BorderColor="#303952" Padding="0" WidthRequest="200" HorizontalOptions="Center">
+                            <Entry Text="{Binding BaseQ}" Placeholder="e.g., 0.1" Keyboard="Numeric" Style="{StaticResource EntryStyle}" />
+                        </Frame>
+                    </StackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="#f4c9d7" BorderColor="#303952" CornerRadius="10" Padding="10" Margin="10">
+                    <StackLayout Padding="10">
+                        <!-- Smoothing Factor -->
+                        <Label Text="Controls how much trust is placed on measurements. A value closer to 1 gives more weight to measurements." 
+                               Style="{StaticResource ExplanationLabelStyle}" />
+                        <Label Text="Smoothing Factor:" Style="{StaticResource InstructionLabelStyle}" />
+                        <Frame CornerRadius="5" BorderColor="#303952" Padding="0" WidthRequest="200" HorizontalOptions="Center">
+                            <Entry Text="{Binding SmoothingFactor}" Placeholder="e.g., 0.9" Keyboard="Numeric" Style="{StaticResource EntryStyle}" />
+                        </Frame>
+                    </StackLayout>
+                </Frame>
+                <!-- Save Button -->
+                <Button Text="Save Settings" Command="{Binding SaveCommand}" BackgroundColor="#786fa6" Style="{StaticResource ButtonStyle}" />
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

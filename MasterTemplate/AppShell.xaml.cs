@@ -1,4 +1,5 @@
 ﻿using MasterTemplate.Pages;
+using System.Collections.ObjectModel;
 
 namespace MasterTemplate
 {
@@ -9,7 +10,12 @@ namespace MasterTemplate
             InitializeComponent();
 
             Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
-            Routing.RegisterRoute(nameof(RunSessionPage), typeof(RunSessionPage));
+            Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
+
+            Shell.SetBackgroundColor(this, Color.FromHex("#f8a5c2"));
+            Shell.SetForegroundColor(this, Color.FromHex("#303952"));
+
+            BindingContext = this;
         }
     }
 }

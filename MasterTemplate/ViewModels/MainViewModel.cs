@@ -4,12 +4,16 @@ using CommunityToolkit.Mvvm.Input;
 using MasterTemplate.Services;
 using CommunityToolkit.Mvvm.Messaging;
 using MasterTemplate.Models;
+using Microsoft.Extensions.Options;
 
 namespace MasterTemplate.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
         // Existing properties
+        [ObservableProperty]
+        private string appVersion = string.Empty;
+
         [ObservableProperty]
         private double targetDistance = 1;
 
@@ -33,6 +37,13 @@ namespace MasterTemplate.ViewModels
 
         [ObservableProperty]
         private string displayTargetDistance = string.Empty;
+        private readonly AppSettings _appSettings;
+
+        public MainViewModel(IOptions<AppSettings> appSettings)
+        {
+            _appSettings = appSettings.Value;
+            AppVersion = $"Version {_appSettings.AppVersion}";
+        }
 
         [RelayCommand]
         private async Task StartTracking()
@@ -76,13 +87,16 @@ namespace MasterTemplate.ViewModels
             IsVisible = true;
             IsTracking = false;
             OnPropertyChanged(nameof(IsNotTracking));
+
+            WeakReferenceMessenger.Default.Unregister<DistanceUpdateMessage>(this);
+            WeakReferenceMessenger.Default.Unregister<GoalReachedMessage>(this);
         }
 
         private void StartListeningForUpdates()
         {
             WeakReferenceMessenger.Default.Register<DistanceUpdateMessage>(this, (recipient, message) =>
             {
-                double distanceInMeters = message.Value * 1000;
+               double distanceInMeters = message.Value * 1000;
 
                 if (distanceInMeters < 1000)
                 {

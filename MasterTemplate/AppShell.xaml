@@ -1,38 +1,48 @@
-<?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="MasterTemplate.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:MasterTemplate.Pages"
-    Shell.FlyoutBehavior="Disabled"
-    Title="Run distance tracker">
-    
-    
-    <!-- Tab Bar for Bottom Navigation -->
-    <TabBar
-        Shell.ForegroundColor="#303952"
-        Shell.BackgroundColor="{StaticResource App_Primary_Background}"
-        Shell.TitleColor="#303952"
-        Shell.DisabledColor="#95a5a6"
-        Shell.UnselectedColor="#7f8c8d"
-        >
-        <!-- First Tab: Home -->
-        <Tab Title="Track distance" Icon="pinpin.png">
-            <ShellContent
-                Title="Distance"
-                ContentTemplate="{DataTemplate local:MainPage}"
-                Route="MainPage"/>
-        </Tab>
+    BackgroundColor="{StaticResource App_Primary_Background}"
+    DisabledColor="#95a5a6"
+    UnselectedColor="#7f8c8d"
+    NavBarHasShadow="False">
 
-        <!-- Second Tab: Settings (example) -->
-        <Tab Title="Track session" Icon="userrunning.png">
-            <ShellContent
-                Title="Session"
-                ContentTemplate="{DataTemplate local:RunSessionPage}"
-                Route="RunSessionPage"/>
-        </Tab>
+    <Shell.FlyoutBackground>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#cf849f" Offset="0.0" />
+            <GradientStop Color="#d16f91" Offset="0.2" />
+            <GradientStop Color="#d38683" Offset="0.4" />
+            <GradientStop Color="#d1957b" Offset="0.6" />
+            <GradientStop Color="#cb6878" Offset="0.8" />
+            <GradientStop Color="#c95b83" Offset="1.0" />
+        </LinearGradientBrush>
+    </Shell.FlyoutBackground>
 
-        <!-- Add more tabs as needed -->
-    </TabBar>
+    <!-- Flyout Header -->
+    <Shell.FlyoutHeader>
+        <Label Margin="5" Text="Menu" FontAttributes="Bold" FontSize="Large" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black"/>
+    </Shell.FlyoutHeader>
+
+    <!-- Shell TitleView -->
+    <Shell.TitleView>
+        <Grid BackgroundColor="{StaticResource App_Primary_Background}">
+            <Label Text="Run distance tracker"
+               TextColor="#303952"
+               HorizontalOptions="Start"
+               VerticalOptions="CenterAndExpand"
+               FontAttributes="Bold"
+               FontSize="Large" />
+        </Grid>
+    </Shell.TitleView>
+
+    <!-- Shell Items -->
+    <FlyoutItem Title="Home" Route="home">
+        <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Settings" Route="settings">
+        <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" />
+    </FlyoutItem>
 
 </Shell>

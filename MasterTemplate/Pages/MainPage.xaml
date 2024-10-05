@@ -9,18 +9,9 @@
     Title="Run distance tracker">
 
     <ContentPage.Resources>
-        <!-- Define styles for reuse -->
-        <Style x:Key="TitleLabelStyle" TargetType="Label">
-            <Setter Property="FontSize" Value="28"/>
-            <Setter Property="FontAttributes" Value="Bold"/>
-            <Setter Property="TextColor" Value="#303952"/>
-            <!-- Dark Blue -->
-            <Setter Property="HorizontalOptions" Value="Center"/>
-            <Setter Property="Margin" Value="0,20,0,10"/>
-        </Style>
-
         <Style x:Key="InstructionLabelStyle" TargetType="Label">
-            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontSize" Value="22" />
+            <Setter Property="FontAttributes" Value="Bold" />
             <Setter Property="TextColor" Value="#303952"/>
             <!-- Dark Blue -->
             <Setter Property="HorizontalOptions" Value="Center"/>
@@ -29,28 +20,28 @@
 
         <Style x:Key="DataLabelStyle" TargetType="Label">
             <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontAttributes" Value="Bold" />
             <Setter Property="TextColor" Value="#303952"/>
             <!-- Dark Blue -->
             <Setter Property="HorizontalOptions" Value="Center"/>
-            <Setter Property="Margin" Value="0,5,0,5"/>
+            <Setter Property="Margin" Value="0,10,0,5"/>
         </Style>
 
         <Style x:Key="ButtonStyle" TargetType="Button">
             <Setter Property="FontSize" Value="20"/>
-            <Setter Property="TextColor" Value="White"/>
+            <Setter Property="TextColor" Value="Black"/>
             <Setter Property="WidthRequest" Value="200"/>
             <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="Margin" Value="0,10,0,0"/>
+            <Setter Property="Margin" Value="0,20,0,0"/>
         </Style>
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <ScrollView>
-            <StackLayout Padding="30" Spacing="10">
+        <Grid RowDefinitions="*, 3.5*, 30" ColumnDefinitions="*">
 
-                <!-- App Title -->
-                <Label Text="Run distance tracker" Style="{StaticResource TitleLabelStyle}"/>
 
+            <StackLayout Padding="30" Spacing="10" Grid.Row="1">
+                
                 <!-- Instruction -->
                 <Label Text="Enter your target distance (km):"
                        Style="{StaticResource InstructionLabelStyle}"
@@ -59,7 +50,7 @@
                 <!-- Entry for Target Distance -->
                 <Frame CornerRadius="5"
                        BorderColor="#303952" 
-                    Padding="0"
+                        Padding="0"
                        IsVisible="{Binding IsVisible}"
                        HorizontalOptions="Center"
                        WidthRequest="200">
@@ -74,33 +65,42 @@
                 </Frame>
 
                 <!-- Display Target Distance after Start Tracking -->
+                <Frame CornerRadius="5"
+                       BorderColor="#636e72" 
+                       BackgroundColor="#a29bfe"
+                       Padding="15"
+                       IsVisible="{Binding IsTracking}"
+                       HorizontalOptions="Center">
+                    <!-- Display Goal Reached Message -->
+                    <Label Text="{Binding GoalReached}"
+                           Style="{StaticResource DataLabelStyle}"
+                           TextColor="#ffeaa7" />
+                </Frame>
+
                 <Label Text="Target Distance:"
                        Style="{StaticResource InstructionLabelStyle}"
                        IsVisible="{Binding IsTracking}"/>
 
-                <Label Text="{Binding DisplayTargetDistance}"
-                       Style="{StaticResource DataLabelStyle}"
-                       IsVisible="{Binding IsTracking}"/>
+                <Frame IsVisible="{Binding IsTracking}" Padding="0" Margin="0" WidthRequest="180" BackgroundColor="#f4c6d6">
+                    <Label Text="{Binding DisplayTargetDistance}"
+                       Style="{StaticResource DataLabelStyle}" />
+                </Frame>
 
                 <!-- Display Cleared Distance -->
+                
                 <Label Text="Distance Covered:"
                        Style="{StaticResource InstructionLabelStyle}"
                        IsVisible="{Binding IsTracking}"/>
 
+                <Frame IsVisible="{Binding IsTracking}" Padding="0" Margin="0" WidthRequest="180" BackgroundColor="#f4c6d6">
                 <Label Text="{Binding ClearedDistance}"
-                       Style="{StaticResource DataLabelStyle}"
-                       IsVisible="{Binding IsTracking}"/>
-
-                <!-- Display Goal Reached Message -->
-                <Label Text="{Binding GoalReached}"
-                       Style="{StaticResource DataLabelStyle}"
-                       TextColor="#e77f67"
-                    IsVisible="{Binding IsTracking}"/>
+                       Style="{StaticResource DataLabelStyle}" />
+                </Frame>
 
                 <!-- Start and Stop Buttons -->
                 <Button Text="Start Tracking"
                     Style="{StaticResource ButtonStyle}"
-                    BackgroundColor="#786fa6" 
+                    BackgroundColor="#9a92c6" 
                     Command="{Binding StartTrackingCommand}"
                     IsEnabled="{Binding IsActive}"
                     IsVisible="{Binding IsNotTracking}"
@@ -113,15 +113,16 @@
                     IsVisible="{Binding IsTracking}"
                     HorizontalOptions="Center"/>
 
-                <Label  
-                    Text="Version 0.1"
+
+            </StackLayout>
+            <Label  Grid.Row="2"
+                    Text="{Binding AppVersion}"
                     FontSize="15"
                     Margin="0,5,0,5"
                     HorizontalOptions="Center"
                     VerticalOptions="EndAndExpand"
                     TextColor="#c44569"/>
-            </StackLayout>
-        </ScrollView>
+        </Grid>
     </ContentPage.Content>
 
 </ContentPage>
